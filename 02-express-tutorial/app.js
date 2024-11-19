@@ -14,6 +14,14 @@ app.get("/api/v1/products", (req, res) => {
     res.status(202).json(products)
 })
 
+app.get("/api/v1/products/:productID",(req, res) => {
+    //res.json(req.params)
+    const idToFind = parseInt(req.params.productID);
+    const product = products.find((p) => p.id === idToFind);
+   console.log(product)
+    if (product === undefined) res.status(404).json( { message: "That product was not found."})
+    res.status(202).json(product)
+})
 /*app.get("/", (req, res)=>{
     console.log("User hit the resource.")
     res.status(200).send("Home Page")
