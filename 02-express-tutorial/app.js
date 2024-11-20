@@ -7,11 +7,11 @@ const { products } = require("./data");
 app.use(express.static("./public"))
 
 app.get("/api/v1/test", (req, res) => {
-    res.status(202).json({ message: "It worked!" })
+    res.status(200).json({ message: "It worked!" })
 })
 
 app.get("/api/v1/products", (req, res) => {
-    res.status(202).json(products)
+    res.status(200).json(products)
 })
 
 app.get("/api/v1/products/:productID",(req, res) => {
@@ -20,7 +20,33 @@ app.get("/api/v1/products/:productID",(req, res) => {
     const product = products.find((p) => p.id === idToFind);
    console.log(product)
     if (product === undefined) res.status(404).json( { message: "That product was not found."})
-    res.status(202).json(product)
+    res.status(200).json(product)
+})
+
+app.get("/api/v1/query", (req, res) => {
+    console.log(req.query)
+    const {search, limit = 5, priceUnder} = req.query
+    let sortedProducts = [...products]
+    if (search) {
+        sortedProducts = sortedProducts.filter((product) => {
+            return product.name.includes(search)
+        })
+    }
+
+    if (limit) {
+        sortedProducts = sortedProducts.slice(0, Number(limit))
+    }
+
+    if (priceUnder) {
+        sortedProducts = sortedProducts.filter((product) => {
+            return product.price < parseFloat(priceUnder)
+        })
+    }
+
+    if(sortedProducts.length < 1) {
+        res.status(200).json({search: true, data:[]})
+    }
+    res.status(200).send(sortedProducts)
 })
 /*app.get("/", (req, res)=>{
     console.log("User hit the resource.")
