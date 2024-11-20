@@ -1,14 +1,29 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Title of the document</title>
+    <title>Code the Dream - Express</title>
 </head>
 
 <body>
-<button onclick="productSearchAll()">Return products</button>
+<div id="productDiv">
+
+</div>
+<button onclick="productSearchAll()">Click me for all products</button>
 <script>
-    function productSearchAll() {
-       return
+    async function productSearchAll() {
+        const url = "/api/v1/products"
+        try {
+            const response = await fetch(url)
+            if(!response.ok) {
+                throw new Error(`Response status: ${response.status}`)
+            }
+            const json = await response.json()
+            console.log(json)
+            const getElement = document.getElementById("productDiv")
+            getElement.innerHTML = JSON.stringify(json, null, 2)
+        } catch(error) {
+            console.error(error.message)
+        }
     }
 </script>
 </body>
