@@ -1,10 +1,17 @@
-//console.log('Express Tutorial')
 const express = require("express")
 const app = express()
 const PORT = 3000
-const { products } = require("./data");
+const logger = require("./logger")
+const { products, people } = require("./data");
 
 app.use(express.static("./public"))
+app.use(express.urlencoded({extended: false}))
+app.use(express.json())
+app.use(logger)
+
+app.get("/", (req, res) => {
+    res.status(200).send("Home")
+})
 
 app.get("/api/v1/test", (req, res) => {
     res.status(200).json({ message: "It worked!" })
@@ -15,7 +22,6 @@ app.get("/api/v1/products", (req, res) => {
 })
 
 app.get("/api/v1/products/:productID",(req, res) => {
-    //res.json(req.params)
     const idToFind = parseInt(req.params.productID);
     const product = products.find((p) => p.id === idToFind);
    console.log(product)
@@ -48,20 +54,27 @@ app.get("/api/v1/query", (req, res) => {
     }
     res.status(200).send(sortedProducts)
 })
-/*app.get("/", (req, res)=>{
-    console.log("User hit the resource.")
-    res.status(200).send("Home Page")
+
+app.get("/api/v1/people", (req, res)=>{
+    res.status(200).json(people)
 })
 
-app.get("/about", (req, res)=>{
-    console.log("User hit the resource.")
-    res.status(200).send("About Page")
-})*/
+app.post("/api/v1/people", (req, res)=>{
+   const {name} = req.body
+    if(name) {
+        // status 201: object was created
+        people.push({ id: people.length + 1, name: req.body.name });
+        res.status(201).json({ success: true, name: req.body.name });
+    }
+    else {
+        res.status(400).json({success: false, message: "Please provide a name"});
+    }
+})
 
 app.all("*", (req, res) => {
     res.status(404).send("<h1>Resource not found.</h1>")
 })
 
-app.listen(3000, () => {
+app.listen(PORT, () => {
     console.log(`The server is listening on port: ${PORT}`)
 })
