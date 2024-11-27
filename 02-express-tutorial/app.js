@@ -47,8 +47,8 @@ app.get("/api/v1/query", (req, res) => {
 })
 
 // optional
-app.get("/test", auth, (res, req)=> {
-    res.status(200).json({message: `Welcome, ${req.user}! `})
+app.get("/test", auth, (req, res)=> {
+    return res.status(200).json({message: `Welcome, ${req.user}! `})
 })
 
 app.post("/logon", (req, res) => {
