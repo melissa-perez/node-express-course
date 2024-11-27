@@ -13,4 +13,3 @@ const getProduct = (req, res) => {
 }
 
 module.exports = {getProducts, getProduct}
-
