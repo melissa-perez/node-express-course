@@ -1,7 +1,7 @@
 const {people} = require("../data");
 
 const getPeople = (req, res) => {
-    res.stats(200).json({success: true, data: people})
+    res.status(200).json({success: true, data: people})
 }
 
 const addPerson = (req, res)=>{
@@ -16,4 +16,27 @@ const addPerson = (req, res)=>{
     }
 }
 
-module.exports = {addPerson, getPeople}
+const getPerson = (req, res) => {
+    const { id } = req.params
+    if (id) {
+        const person = people.find((person) => person.id === Number(id))
+        if (!person) {
+            res.status(404).json({success: false, message: "Id not found."})
+        }
+        res.status(200).json({success: true, data: person})
+    }
+}
+
+const deletePerson = (req, res) => {
+    const { id } = req.params
+    if (id) {
+        const person = people.find((person) => person.id === Number(id))
+        if (!person) {
+            res.status(404).json({success: false, message: "Id not found."})
+        }
+        const filterPeople = people.filter((person) => person.id !== Number(id))
+        res.status(200).json({success: true, data: filterPeople})
+    }
+}
+
+module.exports = {addPerson, getPeople, getPerson, deletePerson }
