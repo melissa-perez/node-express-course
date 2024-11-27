@@ -3,14 +3,7 @@ const { addPerson, getPeople, getPerson, deletePerson } = require("../controller
 
 const router = express.Router();
 
-router.get("/", getPeople)
-
-router.get("/:id", getPerson)
-
-router.post("/", addPerson)
-
-router.delete("/:id", deletePerson)
-
-//router.route("/").get(getPeople).post(addPerson)
+router.route("/").get(getProducts)
+router.route("/:productID").get(getProduct)
 
 module.exports = router

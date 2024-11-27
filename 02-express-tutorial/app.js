@@ -2,35 +2,20 @@ const express = require("express")
 const app = express()
 const PORT = 3000
 
-const logger = require("./logger")
+// data
 const { products} = require("./data");
+// routers
 const peopleRouter = require("./routes/people")
+const productsRouter = require("./routes/products")
+// middleware
+const logger = require("./logger")
 
 app.use(express.static("./public"))
 app.use(express.urlencoded({extended: false}))
 app.use(express.json())
 app.use(logger)
 app.use("/api/v1/people", peopleRouter)
-
-/*app.get("/", (req, res) => {
-    res.status(200).send("Home")
-})
-
-app.get("/api/v1/test", (req, res) => {
-    res.status(200).json({ message: "It worked!" })
-})
-
-app.get("/api/v1/products", (req, res) => {
-    res.status(200).json(products)
-})
-
-app.get("/api/v1/products/:productID",(req, res) => {
-    const idToFind = parseInt(req.params.productID);
-    const product = products.find((p) => p.id === idToFind);
-   console.log(product)
-    if (product === undefined) res.status(404).json( { message: "That product was not found."})
-    res.status(200).json(product)
-})
+app.use("/api/v1/products", productsRouter)
 
 app.get("/api/v1/query", (req, res) => {
     console.log(req.query)
@@ -56,7 +41,7 @@ app.get("/api/v1/query", (req, res) => {
         res.status(200).json({search: true, data:[]})
     }
     res.status(200).send(sortedProducts)
-})*/
+})
 
 app.all("*", (req, res) => {
     res.status(404).send("<h1>Resource not found.</h1>")
