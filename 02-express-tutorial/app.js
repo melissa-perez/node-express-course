@@ -1,15 +1,18 @@
 const express = require("express")
 const app = express()
 const PORT = 3000
+
 const logger = require("./logger")
-const { products, people } = require("./data");
+const { products} = require("./data");
+const peopleRouter = require("./routes/people")
 
 app.use(express.static("./public"))
 app.use(express.urlencoded({extended: false}))
 app.use(express.json())
 app.use(logger)
+app.use("/api/v1/people", peopleRouter)
 
-app.get("/", (req, res) => {
+/*app.get("/", (req, res) => {
     res.status(200).send("Home")
 })
 
@@ -53,23 +56,7 @@ app.get("/api/v1/query", (req, res) => {
         res.status(200).json({search: true, data:[]})
     }
     res.status(200).send(sortedProducts)
-})
-
-app.get("/api/v1/people", (req, res)=>{
-    res.status(200).json(people)
-})
-
-app.post("/api/v1/people", (req, res)=>{
-   const {name} = req.body
-    if(name) {
-        // status 201: object was created
-        people.push({ id: people.length + 1, name: req.body.name });
-        res.status(201).json({ success: true, name: req.body.name });
-    }
-    else {
-        res.status(400).json({success: false, message: "Please provide a name"});
-    }
-})
+})*/
 
 app.all("*", (req, res) => {
     res.status(404).send("<h1>Resource not found.</h1>")
