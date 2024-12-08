@@ -184,7 +184,7 @@ console.log('everyone last name', everyonesLastName);
 
 //////// CHALLENGE: Filter to the people who followed the right
 // "right format" is "<first name> <last name>" with a single space!
-const rightFormat = /^\w+ \w+$/;
+const rightFormat = /\w^+ \w+$/;
 const matchesTeachersPedanticFormattingRule = names.filter((name) => {
   return name.match(rightFormat);
 });
