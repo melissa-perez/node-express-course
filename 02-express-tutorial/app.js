@@ -1,27 +1,24 @@
-//console.log('Express Tutorial')
 const express = require("express")
+const cookieParser = require("cookie-parser")
 const app = express()
 const PORT = 3000
-const { products } = require("./data");
+
+// data
+const { products} = require("./data");
+// routers
+const peopleRouter = require("./routes/people")
+const productsRouter = require("./routes/products")
+// middleware
+const logger = require("./logger")
+const auth = require("./auth")
 
 app.use(express.static("./public"))
-
-app.get("/api/v1/test", (req, res) => {
-    res.status(200).json({ message: "It worked!" })
-})
-
-app.get("/api/v1/products", (req, res) => {
-    res.status(200).json(products)
-})
-
-app.get("/api/v1/products/:productID",(req, res) => {
-    //res.json(req.params)
-    const idToFind = parseInt(req.params.productID);
-    const product = products.find((p) => p.id === idToFind);
-   console.log(product)
-    if (product === undefined) res.status(404).json( { message: "That product was not found."})
-    res.status(200).json(product)
-})
+app.use(express.urlencoded({extended: false}))
+app.use(express.json())
+app.use(cookieParser())
+app.use(logger)
+app.use("/api/v1/people", peopleRouter)
+app.use("/api/v1/products", productsRouter)
 
 app.get("/api/v1/query", (req, res) => {
     console.log(req.query)
@@ -48,20 +45,29 @@ app.get("/api/v1/query", (req, res) => {
     }
     res.status(200).send(sortedProducts)
 })
-/*app.get("/", (req, res)=>{
-    console.log("User hit the resource.")
-    res.status(200).send("Home Page")
+
+// optional
+app.get("/test", auth, (req, res)=> {
+    return res.status(200).json({message: `Welcome, ${req.user}! `})
 })
 
-app.get("/about", (req, res)=>{
-    console.log("User hit the resource.")
-    res.status(200).send("About Page")
-})*/
+app.post("/logon", (req, res) => {
+    const {name} = req.body
+
+    if(name){
+        return res.status(201).cookie("name", name).json({message: `Hello, ${name}`})
+    }
+    res.status(400).json({message: "Error: name not found in request"})
+})
+
+app.delete("/logoff", (req, res) => {
+    res.status(200).clearCookie("name").json({message: "User has logged off."})
+})
 
 app.all("*", (req, res) => {
     res.status(404).send("<h1>Resource not found.</h1>")
 })
 
-app.listen(3000, () => {
+app.listen(PORT, () => {
     console.log(`The server is listening on port: ${PORT}`)
 })
