@@ -3,9 +3,10 @@ require("dotenv").config();
 const express = require("express");
 const app = express();
 const PORT = process.env.PORT || 3000;
-const loginRouter = require("./routes/login");
+const mainRouter = require("./routes/login");
+
 app.use(express.json());
-app.use("/api/v1", loginRouter);
+app.use("/api/v1", mainRouter);
 app.use(express.static("./public"));
 
 const start = () => {
