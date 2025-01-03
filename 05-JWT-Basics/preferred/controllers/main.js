@@ -1,12 +1,14 @@
+const jwt = require("jsonwebtoken");
 const { createStatusError } = require("../errors/custom-errors");
 
-const login = async (request, response) => {
+const logon = async (request, response) => {
     const { name, password } = request.body;
     console.log(name, password);
 
     if (!name || !password) {
         throw createStatusError("Please provide email and password", 400);
     }
+    const token = jwt.sign({ name }, process.env.JWT_SECRET, { expiresIn: process.env.LIFETIME });
     response.send("Fake login/register/signup route");
 };
 
@@ -15,4 +17,4 @@ const hello = async (request, response) => {
 
 };
 
-module.exports = { login, hello };
+module.exports = { logon, hello };
