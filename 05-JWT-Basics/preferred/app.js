@@ -4,12 +4,18 @@ const express = require("express");
 const app = express();
 const PORT = process.env.PORT || 3000;
 const mainRouter = require("./routes/main");
+const notFound = require("./middleware/not-found");
+const errorHandlerMiddleware = require("./middleware/error-handler");
 
+app.use(express.static("./public"));
 app.use(express.json());
 app.use("/api/v1", mainRouter);
-app.use(express.static("./public"));
+app.use(notFound);
+app.use(errorHandlerMiddleware);
 
-const start = () => {
+
+
+const start = async () => {
     try {
         app.listen(PORT, () => {
             console.log(`Server is running on port: ${PORT}`);
