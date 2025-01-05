@@ -7,18 +7,17 @@ const authentication = async (request, response, next) => {
     const authHeader = request.headers.authorization;
 
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
-        throw new StatusError("No token provided", StatusCodes.UNAUTHORIZED);
+        return response.status(StatusCodes.UNAUTHORIZED).json({ message: "unauthorized" });
     }
 
     const token = authHeader.split(' ')[1];
-    console.log(token);
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
         const { name } = decoded;
-        request.name = { name };
+        request.user = { name };
         next();
     } catch (error) {
-        throw new StatusError("Not authorized to access this route.", StatusCodes.UNAUTHORIZED);
+        return response.status(StatusCodes.UNAUTHORIZED).json({ message: "unauthorized" });
     }
 };
 

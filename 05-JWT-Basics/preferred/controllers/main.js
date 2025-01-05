@@ -13,12 +13,12 @@ const logon = async (request, response) => {
         expiresIn: process.env.LIFETIME,
     });
 
-    response.status(StatusCodes.OK).json({ msg: "User created", token });
+    return response.status(StatusCodes.OK).json({ token });
 };
 
 const hello = async (request, response) => {
-    response.status(StatusCodes.OK).json({
-        msg: `Hello, ${request.name.name}`
+    return response.status(StatusCodes.OK).json({
+        message: `Hello, ${request.user.name}. Welcome to authorized /hello`
     });
 };
 
