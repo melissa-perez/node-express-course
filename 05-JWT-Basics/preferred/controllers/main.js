@@ -8,16 +8,15 @@ const logon = async (request, response) => {
     if (!name || !password) {
         throw new StatusError("Please provide email and password", StatusCodes.BAD_REQUEST);
     }
+    try {
+        const token = await jwt.sign({ name }, process.env.JWT_SECRET, {
+            expiresIn: process.env.LIFETIME,
+        });
+        return response.status(StatusCodes.OK).json({ token });
 
-    const token = jwt.sign({ name }, process.env.JWT_SECRET, {
-        expiresIn: process.env.LIFETIME,
-    }, (error, token) => {
-        if (error) {
-            throw new StatusError("Error in creating token", StatusCodes.BAD_REQUEST);
-        }
-    });
-
-    return response.status(StatusCodes.OK).json({ token });
+    } catch (error) {
+        throw new StatusError("Error in creating token", StatusCodes.BAD_REQUEST);
+    }
 };
 
 const hello = async (request, response) => {
