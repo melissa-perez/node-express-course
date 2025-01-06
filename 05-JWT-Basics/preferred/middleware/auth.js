@@ -11,14 +11,17 @@ const authentication = async (request, response, next) => {
     }
 
     const token = authHeader.split(' ')[1];
-    try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        const { name } = decoded;
-        request.user = { name };
-        next();
-    } catch (error) {
-        return response.status(StatusCodes.UNAUTHORIZED).json({ message: "unauthorized" });
-    }
+
+    jwt.verify(token, process.env.JWT_SECRET, (error, decoded) => {
+
+        if (error) {
+            return response.status(StatusCodes.UNAUTHORIZED).json({ message: "unauthorized" });
+        } else {
+            const { name } = decoded;
+            request.user = { name };
+            next();
+        }
+    });
 };
 
 module.exports = authentication;

@@ -11,6 +11,10 @@ const logon = async (request, response) => {
 
     const token = jwt.sign({ name }, process.env.JWT_SECRET, {
         expiresIn: process.env.LIFETIME,
+    }, (error, token) => {
+        if (error) {
+            throw new StatusError("Error in creating token", StatusCodes.BAD_REQUEST);
+        }
     });
 
     return response.status(StatusCodes.OK).json({ token });
